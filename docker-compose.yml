@@ -1,0 +1,18 @@
+version: '3.6'
+services:
+  test:
+    image: test:latest
+    ports:
+     - 4000:3000
+    environment:
+      AWS_S3_BUCKET: ohio-website
+    env_file:
+       - .env
+    networks:
+      - test-net
+
+
+networks:
+  test-net:
+    driver: 'bridge'
+    attachable: true
