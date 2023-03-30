@@ -1,4 +1,5 @@
 import React from 'react';
+import Layout from '../../components/Layout';
 import { useParams } from 'react-router-dom';
 import { client } from '../../services';
 import { useQuery, gql } from '@apollo/client';
@@ -40,12 +41,12 @@ const ProductPage = () => {
   const product = data?.productByHandle;
 
   return (
-    <div>
+    <Layout>
       <h1 className='text-center block mb-3'>{product.title}</h1>
       <img src={product.images.edges[0].node.originalSrc} alt={product.images.edges[0].node.altText} />
       <p>Price: {product.variants.edges[0].node.priceV2.amount} {product.variants.edges[0].node.priceV2.currencyCode}</p>
       <AddToCartButton product={product} />
-    </div>
+    </Layout>
   );
 };
 

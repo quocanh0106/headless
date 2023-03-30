@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { client } from '../../services';
 import { LineItems } from './LineItem'
-
+import Layout from '../../components/Layout';
 
 function CartPage() {
   const [ checkoutId, setCheckoutId ] = useState(localStorage.getItem('checkoutId'));
@@ -56,12 +56,12 @@ function CartPage() {
   if (error) return <p>Error :(</p>;
 
   return (
-    <div>
+    <Layout>
       <h2>Cart</h2>
       <p>Subtotal: {data.node.subtotalPriceV2.amount} {data.node.subtotalPriceV2.currencyCode}</p>
       <LineItems data={data} />
       <a href={data.node.webUrl}>Checkout</a>
-    </div>
+    </Layout>
   );
 }
 
