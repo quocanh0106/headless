@@ -71,8 +71,8 @@ export const AddToCartButton = ({ product }) => {
   }
   return (
     <div>
-      <input id="quantity" type="number" name="quantity" value={quantity} onChange={handleQuantityChange}/>
-      <button onClick={handleAddToCart}>Add to Cart</button>
+      <input id="quantity" className='text-center border' type="number" name="quantity" value={quantity} onChange={handleQuantityChange}/>
+      <button className='block w-full rounded-sm border bg-gray-400 hover:border-black hover:bg-black hover:text-white transition-all p-3 mt-4' onClick={handleAddToCart}>Add to Cart</button>
     </div>
   );
 };

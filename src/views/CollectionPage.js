@@ -2,46 +2,71 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { client } from '../services';
 import { useQuery, gql } from '@apollo/client';
-
+import Layout from '../components/Layout';
 
 function CollectionPage() {
   const handle = useParams().handle;
   const GET_COLLECTION = gql`
-    query {
+    query AllProducts($after: String) {
       collectionByHandle(handle: "${handle}") {
         id
         title
+        image {
+          url
+        }
         description
-        products(first: 250) {
+        products(first: 16, after: $after) {
           edges {
             node {
               id
               title
               handle
               description
-              images(first: 1) {
+              priceRange { 
+                minVariantPrice {
+                  amount
+                }
+                maxVariantPrice {
+                  amount
+                }
+              }
+              images(first: 250) {
                 edges {
                   node {
                     originalSrc
                   }
                 }
               }
-              variants(first: 1) {
+              variants(first: 250) {
                 edges {
                   node {
+                    compareAtPrice
                     price
                   }
                 }
               }
             }
           }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            endCursor
+            startCursor
+          }
         }
       }
     }
   `;
-
+  // const TOTAL_COUNT = gql`
+  //   query totalCount($id: ID) {
+  //     collection(id: $id) {
+  //       productsConnection(first: 1) {
+  //         totalCount
+  //       }
+  //     }
+  //   }
+  // `
   const { loading, error, data } = useQuery(GET_COLLECTION, { client });
-
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -49,24 +74,31 @@ function CollectionPage() {
       setProducts(data?.collectionByHandle?.products.edges.map(({ node }) => node));
     }
   }, [data]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (loading) return <Layout><p>Loading...</p></Layout>;
+  if (error) return <Layout><p>Error: {error.message}</p></Layout>;
   const { collectionByHandle: collection } = data;
+
   return (
-    <div>
-      <h1 className='text-center block mb-3'>{collection?.title}</h1>
-      <p>{collection?.description}</p>
-      <div>
+    <Layout>
+      <div className='relative'>
+        <img src={collection?.image?.url} alt="banner"/>
+        <h1 className='text-center block text-4xl font-bold text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>{collection?.title}</h1>
+      </div>
+      
+      <div className='grid grid-cols-4 gap-4 max-w-container mx-auto px-4 mb-5 md:mb-8 mt-8'>
         {products?.map((product) => (
-          <Link to={`/products/${product.handle}`} key={product.id}>
-            <h2 className='text-center'>{product.title}</h2>
-            <img src={product.images.edges[0].node.originalSrc} alt={product.images.edges[0].node.altText} />
-            <p>{product.variants.edges[0].node.price}</p>
-          </Link>
+          <div className='w-full' key={product.id}>
+            <Link to={`/products/${product.handle}`} className='w-full'>
+              <img className='w-full' src={product.images.edges[0].node.originalSrc} alt={product.images.edges[0].node.altText} />
+            </Link>
+            <Link to={`/products/${product.handle}`} className='w-full mt-2'>
+              <h3 className='text-xl'>{product.title}</h3>
+            </Link>
+            <p className='w-full mt-2'>{product.variants.edges[0].node.price}</p>
+          </div>
         ))}
       </div>
-    </div>  
+    </Layout>
   );
 };
 
