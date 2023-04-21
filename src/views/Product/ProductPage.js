@@ -12,7 +12,8 @@ const ProductPage = () => {
         id
         title
         handle
-        images(first: 1) {
+        description
+        images(first: 250, after: null) {
           edges {
             node {
               originalSrc
@@ -20,7 +21,7 @@ const ProductPage = () => {
             }
           }
         }
-        variants(first: 100) {
+        variants(first: 250, after: null) {
           edges {
             node {
               id
@@ -42,10 +43,15 @@ const ProductPage = () => {
 
   return (
     <Layout>
-      <h1 className='text-center block mb-3'>{product.title}</h1>
-      <img src={product.images.edges[0].node.originalSrc} alt={product.images.edges[0].node.altText} />
-      <p>Price: {product.variants.edges[0].node.priceV2.amount} {product.variants.edges[0].node.priceV2.currencyCode}</p>
-      <AddToCartButton product={product} />
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 px-4 md:px-6 lg:px-8 max-w-container mx-auto my-8 items-center'>
+        <img className='w-full' src={product.images.edges[0].node.originalSrc} alt={product.images.edges[0].node.altText} />
+        <div className='w-full'>
+          <h1 className='block mb-3 w-full text-3xl font-bold'>{product.title}</h1>
+          <p className='block mb-3 w-full'>{product.description}</p>
+          <p className='block mb-3 w-full'>Price: {product.variants.edges[0].node.priceV2.amount} {product.variants.edges[0].node.priceV2.currencyCode}</p>
+          <AddToCartButton product={product} />
+        </div>
+      </div>
     </Layout>
   );
 };

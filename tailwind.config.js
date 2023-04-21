@@ -14,6 +14,9 @@ module.exports = {
           '50%': { transform: 'translateX( calc(-200% - 200px) )' },
           '100%': { transform: 'translateX( calc(-300% - 300px) )' }
         }
+      },
+      maxWidth: {
+        'container': '90rem',
       }
     },
   },
